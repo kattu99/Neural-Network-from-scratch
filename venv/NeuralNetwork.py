@@ -94,10 +94,12 @@ class Network:
             layer[-1].setOutput(1)
             self.layers.append(layer)
 
+    #Set the input
     def setInput(self, inputs):
         for i in range(len(inputs)):
             self.layers[0][i].setOutput(inputs[i])
 
+    #Return the error calculated for the output
     def getError(self, target):
         err = 0
         for i in range(len(target)):
@@ -107,11 +109,13 @@ class Network:
         err = math.sqrt(err)
         return err
 
+    #forward propagate each and every neuron
     def forwardPropagation(self):
         for layer in self.layers[1:]:
             for neuron in layer:
                 neuron.forwardPropagation()
 
+    #back propagate each and every neuron
     def backPropagation(self,target):
         for i in range(len(target)):
             self.layers[-1][i].setError(target[i] - self.layers[-1][i].getOutput())
@@ -135,9 +139,9 @@ class Network:
                 self.setInput(inputs[i])
                 self.forwardPropagation()
                 self.backPropagation(outputs[i])
-                err = err + net.getError(outputs[i])
+                err = err + self.getError(outputs[i])
             print("error: ", err)
-            if err < 0.01:
+            if err < 0.1:
                 break
 
     #inputs are two dimensional
@@ -146,8 +150,3 @@ class Network:
         self.forwardPropagation()
         return self.getResults()
 
-topology = [2,3,2]
-inputs = [[0, 0], [0, 1], [1, 0], [1, 1]]
-outputs = [[0, 0], [1, 0], [1, 0], [0, 1]]
-net = Network(topology)
-net.train(inputs,outputs)
